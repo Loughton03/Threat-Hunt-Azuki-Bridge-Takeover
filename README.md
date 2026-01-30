@@ -1,6 +1,7 @@
-![image](https://i.imgur.com/MghA01o.png)
+<img width="657" height="987" alt="image" src="https://github.com/user-attachments/assets/bd911183-b512-4165-b24d-64fd7c8ad53a" />
 
-# CorpHealth: Traceback
+
+# Azuki: Bridge Takeover 
 
 ## Index
 
