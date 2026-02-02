@@ -93,27 +93,99 @@ Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 ## Attack Timeline
 
 ## Flag 1:
-'''kql
+```kql
 
-'''
+```
 ## Flag 2:
+```kql
+
+```
+
 ## Flag 3:
+```kql
+
+```
+
 ## Flag 4:
+```kql
+
+```
+
 ## Flag 5:
+```kql
+
+```
+
 ## Flag 6:
+```kql
+
+```
+
 ## Flag 7:
+```kql
+
+```
+
 ## Flag 8:
+```kql
+
+```
+
 ## Flag 8:
+```kql
+
+```
+
 ## Flag 10:
+```kql
+
+```
+
 ## Flag 11:
+```kql
+
+```
+
 ## Flag 12:
+```kql
+
+```
+
 ## Flag 13:
+```kql
+
+```
+
 ## Flag 14:
+```kql
+
+```
+
 ## Flag 15:
+```kql
+
+```
+
 ## Flag 16:
+```kql
+
+```
+
 ## Flag 17:
+```kql
+
+```
+
 ## Flag 18:
+```kql
+
+```
+
 ## Flag 19: 
+```kql
+
+```
+
 ## Flag 20: 
 
 
