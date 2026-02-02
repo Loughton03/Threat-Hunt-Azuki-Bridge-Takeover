@@ -149,6 +149,9 @@ Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 ```
 
 ## Flag 20: 
+```kql
+
+```
 
 ## Indicators of Compromise (IoCs)
 IPv4 Addresses:
