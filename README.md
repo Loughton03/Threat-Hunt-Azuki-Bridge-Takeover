@@ -25,29 +25,6 @@ Query Language: Kusto Query Language (KQL)
 Framework: MITRE ATT&CK
 
 
-## Technical Analysis
-Affected Systems & Data:
-
-- Target System: `azuki-adminpc` (CEO/Administrative Workstation).
-- Compromised Accounts: `yuki.tanaka` (Primary Victim), `yuki.tanaka2` (Backdoor Account).
-
-## Exfiltrated Data:
-- Financial Records: Banking, QuickBooks, Tax, and Contract records.
-- Credentials: Azuki-Passwords.kdbx (KeePass database), OLD-Passwords.txt (Plaintext), and Google Chrome Login Data.
-
-## Indicators of Compromise (IoCs)
-IPv4 Addresses:
-- 10.1.0.204 (Internal Lateral Movement Source).
-- 45.112.123.227 (Exfiltration Destination - gofile.io).</br>
-Domains:
-- litter.catbox.moe (Malware Hosting).
-- store1.gofile.io (Exfiltration).</br>
-Filenames:
-- meterpreter.exe (C2 Implant).
-- m.exe (Renamed Mimikatz).
-- KB5044273-x64.7z (Malicious Payload masquerading as Update).
-- Named Pipe: \Device\NamedPipe\msf-pipe-5902.
-
 
 
 ## MITRE ATT&CK MAPPING
@@ -76,26 +53,13 @@ Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 - Integrity (High): System integrity compromised via the creation of backdoor administrative accounts and the modification of system groups.
 - Availability (Low): No ransomware or destructive wiping was observed; operations were not halted.
 
-
-## Key Evidence Requiring Deeper Analysis
-
-## Lessons Learned
-
-## Threat Actor Assessment
-
-
-
-
-
-
-
-
 ## Attack Timeline
 
 ## Flag 1:
 ```kql
 
 ```
+
 ## Flag 2:
 ```kql
 
@@ -105,7 +69,6 @@ Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 ```kql
 
 ```
-
 ## Flag 4:
 ```kql
 
@@ -115,7 +78,6 @@ Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 ```kql
 
 ```
-
 ## Flag 6:
 ```kql
 
@@ -188,32 +150,32 @@ Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 
 ## Flag 20: 
 
+## Indicators of Compromise (IoCs)
+IPv4 Addresses:
+- 10.1.0.204 (Internal Lateral Movement Source).
+- 45.112.123.227 (Exfiltration Destination - gofile.io).</br>
+Domains:
+- litter.catbox.moe (Malware Hosting).
+- store1.gofile.io (Exfiltration).</br>
+Filenames:
+- meterpreter.exe (C2 Implant).
+- m.exe (Renamed Mimikatz).
+- KB5044273-x64.7z (Malicious Payload masquerading as Update).
+- Named Pipe: \Device\NamedPipe\msf-pipe-5902.
 
 
+## Technical Analysis
+Affected Systems & Data:
 
+- Target System: `azuki-adminpc` (CEO/Administrative Workstation).
+- Compromised Accounts: `yuki.tanaka` (Primary Victim), `yuki.tanaka2` (Backdoor Account).
 
+## Exfiltrated Data:
+- Financial Records: Banking, QuickBooks, Tax, and Contract records.
+- Credentials: Azuki-Passwords.kdbx (KeePass database), OLD-Passwords.txt (Plaintext), and Google Chrome Login Data.
 
+## Key Evidence Requiring Deeper Analysis
 
+## Lessons Learned
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Threat Actor Assessment
