@@ -4,7 +4,7 @@
 - Incident Report: Bridge Takeover & Data Exfiltration
 - Incident ID: INC-2025-12-23-AZUKI
 - Date: January 30, 2026
-- Analyst:
+- Analyst: Loughton Bennett
 
 ## Incident Overview
 This report provides a breakdown of the Advanced Persistent Threat (APT) breach detected at Azuki Import/Export in November 2025. The attackers established a foothold on November 19, then paused for three days. They resurfaced on November 22 with an attack geared towards moving laterally across the network and stealing user credentials.
@@ -19,10 +19,8 @@ This report documents the complete attack chain through Microsoft Defender for E
 - DeviceFileEvents
 - DeviceRegistryEvents
 - Analysis Period: November 19 - 25, 2025
-
-Query Language: Kusto Query Language (KQL)
-
-Framework: MITRE ATT&CK
+- Query Language: Kusto Query Language (KQL)
+- Framework: MITRE ATT&CK
 
 
 
@@ -48,14 +46,22 @@ Persistence	       | T1547.001	 |  Registry Run Keys - Autostart mechanism
 Defense Evasion    | 	T1070.004	 |  File Deletion - History file removal
 
 
-## Impact Analysis
-- Confidentiality (Critical): Loss of sensitive financial data (banking/tax records), master passwords (Azuki-Passwords.kdbx), and browser-stored credentials.
-- Integrity (High): System integrity compromised via the creation of backdoor administrative accounts and the modification of system groups.
-- Availability (Low): No ransomware or destructive wiping was observed; operations were not halted.
+## Technical Analysis
+Affected Systems & Data:
+
+- Target System: `azuki-adminpc`.
+- Compromised Accounts: `yuki.tanaka` (Primary Victim), `yuki.tanaka2` (Backdoor Account).
+
+## Exfiltrated Data:
+- Financial Records: Banking, QuickBooks, Tax, and Contract records.
+- Credentials: Azuki-Passwords.kdbx (KeePass database), OLD-Passwords.txt (Plaintext), and Google Chrome Login Data.
 
 ## Attack Timeline
 
-## Flag 1:
+## Flag 1: INITIAL ACCESS - Return Connection Source
+
+- Objective: Identify the source IP address of the attacker
+  
 ```kql
 DeviceLogonEvents
 | where DeviceName contains "azuki"
@@ -64,7 +70,10 @@ DeviceLogonEvents
 | sort by Timestamp desc
 ```
 
-## Flag 2:
+## Flag 2: LATERAL MOVEMENT - Compromised Device
+
+- Objective: Identify lateral movement attempts
+  
 ```kql
 DeviceNetworkEvents
 | where DeviceName contains "azuki-adminpc"
@@ -75,7 +84,10 @@ DeviceNetworkEvents
 | sort by Timestamp asc
 ```
 
-## Flag 3:
+## Flag 3: LATERAL MOVEMENT - Compromised Account
+
+- Objective: Identify the compromised account used for file server access
+- 
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -84,7 +96,10 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 4:
+## Flag 4: DISCOVERY - Share Enumeration Command
+
+- Objective: Identify network share enumeration
+  
 ```kql
 DeviceFileEvents
 | where DeviceName == "azuki-adminpc"
@@ -92,7 +107,10 @@ DeviceFileEvents
 | project Timestamp, FileName, FolderPath, SHA256, InitiatingProcessCommandLine
 ```
 
-## Flag 5:
+## Flag 5: DISCOVERY - Remote Share Enumeration
+
+- Objective: Identify remote network share enumeration
+  
 ```kql
 DeviceEvents
 | where ActionType == "NamedPipeEvent"
@@ -102,7 +120,10 @@ DeviceEvents
 | project Timestamp, DeviceName, ActionType, PipeName, InitiatingProcessFileName, AdditionalFields
 | sort by Timestamp asc
 ```
-## Flag 6:
+## Flag 6: DISCOVERY - Privilege Enumeration
+
+- Objective: Identify privilege escalation attempt
+  
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -112,7 +133,10 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 7:
+## Flag 7: DISCOVERY - Network Configuration Command
+
+- Objective: Identify network configuration reconnaissance
+  
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -121,7 +145,10 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 8:
+## Flag 8: DEFENSE EVASION - Directory Hiding Command
+
+
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -130,7 +157,7 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 9:
+## Flag 9: COLLECTION - Staging Directory Path
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -139,7 +166,10 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 10:
+## Flag 10: DEFENSE EVASION - Script Download Command
+
+- Objective: Identify malicious script or tool downloads
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -147,7 +177,10 @@ DeviceProcessEvents
 | project Timestamp, FileName, ProcessCommandLine, AccountName
 ```
 
-## Flag 11:
+## Flag 11: COLLECTION - Credential File Discovery
+
+- Objective: Identify creation or access of credential-related files
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -157,7 +190,10 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 12:
+## Flag 12: COLLECTION - Recursive Copy Command
+
+- Objective: Identify bulk data collection operations
+
 ```kql
 DeviceFileEvents
 | where DeviceName == "azuki-adminpc"
@@ -166,7 +202,10 @@ DeviceFileEvents
 | sort by Timestamp asc
 ```
 
-## Flag 13:
+## Flag 13: COLLECTION - Compression Command
+
+- Objective: Identify data compression activities
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -176,7 +215,10 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 14:
+## Flag 14: CREDENTIAL ACCESS - Renamed Tool
+
+- Objective: Identify renamed credential theft tools
+
 ```kql
 DeviceFileEvents
 | where DeviceName == "azuki-adminpc"
@@ -184,7 +226,10 @@ DeviceFileEvents
 | where FolderPath has_any ("Crypto\\staging", "Windows\\Temp\\cache")
 ```
 
-## Flag 15:
+## Flag 15: CREDENTIAL ACCESS - Memory Dump Command
+
+- Objective: Identify LSASS memory dumping activities
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -194,7 +239,11 @@ DeviceProcessEvents
 | sort by Timestamp asc
 ```
 
-## Flag 16:
+## Flag 16: EXFILTRATION - Upload Command
+
+- Objective: Identify data upload/exfiltration commands
+
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -202,7 +251,11 @@ DeviceProcessEvents
 | project Timestamp, FileName, ProcessCommandLine, InitiatingProcessCommandLine
 ```
 
-## Flag 17:
+## Flag 17: EXFILTRATION - Cloud Service
+
+- Objective: Identify exfiltration to cloud storage services
+
+
 ```kql
 DeviceNetworkEvents
 | where DeviceName == "azuki-adminpc"
@@ -211,7 +264,10 @@ DeviceNetworkEvents
 | project Timestamp, RemoteIP, RemoteUrl, RemotePort
 ```
 
-## Flag 18:
+## Flag 18: PERSISTENCE - Registry Value Name
+
+- Objective: Identify persistence mechanism via registry modification
+
 ```kql
 DeviceRegistryEvents
 | where DeviceName == "azuki-fileserver01"
@@ -222,12 +278,19 @@ DeviceRegistryEvents
 | sort by TimeGenerated asc
 ```
 
-## Flag 19: 
+## Flag 19: PERSISTENCE - Beacon Filename
+
+- Objective: Identify the persistent backdoor executable
+
 ```kql
 
 ```
 
-## Flag 20: 
+## Flag 20: ANTI-FORENSICS - History File Deletion
+
+- Objective: Identify anti-forensic activities
+
+
 ```kql
 DeviceFileEvents
 | where DeviceName == "azuki-fileserver01"
@@ -270,44 +333,37 @@ DeviceFileEvents
 -	Compromise Vector: Still investigating. We need to dig deeper into the logs to find exactly how they got in.
 -	Attacker Control: Remote Desktop Access
 -	Status: COMPROMISED
--	 </br>
+ </br>
 
 -	azuki-fileserver01 (10.1.0.188)
 -	Compromise Vector: They pivoted here from the workstation (azuki-sl) using RDP. 
 -	Attacker Control: Fully compromised 
--	Status: CRITICALLY COMPROMISED 
-#### Potentially Compromised Accounts
+-	Status: CRITICALLY COMPROMISED
+  
+### Potentially Compromised Accounts
 -	Any user account that logged into the file server (azuki-fileserver01) during the attack window should be considered compromised.
 -	Service accounts usually have high privileges, so if they touched these infected machines, we have to assume the attackers have those keys now too.
 
 
-File System Indicators
-Renamed Credential Tool: [Flag 14 - FileName and SHA256]
-Persistence Beacon: [Flag 19 - Registry Value Data path]
-Compressed Archives: [Flag 13 - Identify .7z/.zip file names]
-Staged Data Directory: [Flag 12 - robocopy destination path]
+### File System Indicators
+- Renamed Credential Tool: [Flag 14 - FileName and SHA256]
+- Persistence Beacon: [Flag 19 - Registry Value Data path]
+- Compressed Archives: [Flag 13 - Identify .7z/.zip file names]
+- Staged Data Directory: [Flag 12 - robocopy destination path]
 
-Registry Indicators
-Persistence Key: HKCU/HKLM\Software\Microsoft\Windows\CurrentVersion\Run
-Persistence Value Name: [Flag 18 result]
+### Registry Indicators
+- Persistence Key: HKCU/HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+- Persistence Value Name: [Flag 18 result]
 
-Process Execution
-mstsc.exe with specific command line parameters
-net.exe/net1.exe for share enumeration
-whoami.exe for privilege checking
-certutil.exe for file downloads
-7z.exe for data compression
-curl.exe/powershell.exe for exfiltration
-Renamed executables targeting LSASS
+### Process Execution
+- mstsc.exe with specific command line parameters
+- net.exe/net1.exe for share enumeration
+- whoami.exe for privilege checking
+- certutil.exe for file downloads
+- 7z.exe for data compression
+- curl.exe/powershell.exe for exfiltration
+- Renamed executables targeting LSASS
 
-## Technical Analysis
-Affected Systems & Data:
 
-- Target System: `azuki-adminpc` (CEO/Administrative Workstation).
-- Compromised Accounts: `yuki.tanaka` (Primary Victim), `yuki.tanaka2` (Backdoor Account).
-
-## Exfiltrated Data:
-- Financial Records: Banking, QuickBooks, Tax, and Contract records.
-- Credentials: Azuki-Passwords.kdbx (KeePass database), OLD-Passwords.txt (Plaintext), and Google Chrome Login Data.
 
 
