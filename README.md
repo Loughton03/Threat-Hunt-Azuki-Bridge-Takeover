@@ -12,7 +12,7 @@ This report provides a breakdown of the Advanced Persistent Threat (APT) breach 
 This report documents the complete attack chain through Microsoft Defender for Endpoint telemetry analysis, utilizing Kusto Query Language (KQL) to identify Indicators of Compromise (IOCs) and Tactics, Techniques, and Procedures (TTPs) aligned with the MITRE ATT&CK framework.
 
 ## INVESTIGATION METHODOLOGY
-* Data Sources:
+### Data Sources:
 - Microsoft Defender for Endpoint Logs
 - DeviceLogonEvents
 - DeviceProcessEvents
@@ -21,8 +21,6 @@ This report documents the complete attack chain through Microsoft Defender for E
 - Analysis Period: November 19 - 25, 2025
 - Query Language: Kusto Query Language (KQL)
 - Framework: MITRE ATT&CK
-
-
 
 
 ## MITRE ATT&CK MAPPING
@@ -147,7 +145,7 @@ DeviceProcessEvents
 
 ## Flag 8: DEFENSE EVASION - Directory Hiding Command
 
-
+- Objective: identify potential defensive evasion
 
 ```kql
 DeviceProcessEvents
@@ -158,6 +156,9 @@ DeviceProcessEvents
 ```
 
 ## Flag 9: COLLECTION - Staging Directory Path
+
+- Objective: identify potential data collection
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -283,7 +284,11 @@ DeviceRegistryEvents
 - Objective: Identify the persistent backdoor executable
 
 ```kql
-
+DeviceRegistryEvents
+| where DeviceName == "azuki-fileserver01"
+| where ActionType in ("RegistryValueSet","RegistryValueModified")
+| where RegistryValueName == "FileShareSync"
+| project Timestamp, RegistryKey, RegistryValueName, RegistryValueData
 ```
 
 ## Flag 20: ANTI-FORENSICS - History File Deletion
