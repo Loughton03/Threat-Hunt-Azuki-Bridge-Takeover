@@ -85,7 +85,7 @@ DeviceNetworkEvents
 ## Flag 3: LATERAL MOVEMENT - Compromised Account
 
 - Objective: Identify the compromised account used for file server access
-- 
+
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
@@ -332,42 +332,7 @@ DeviceFileEvents
 - curl.exe/powershell.exe for exfiltration
 - Renamed executables targeting LSASS
 
-## COMPROMISED ASSETS
-### Confirmed Compromised Systems
--	azuki-sl (Initial Access Workstation)
--	Compromise Vector: Still investigating. We need to dig deeper into the logs to find exactly how they got in.
--	Attacker Control: Remote Desktop Access
--	Status: COMPROMISED
- </br>
 
--	azuki-fileserver01 (10.1.0.188)
--	Compromise Vector: They pivoted here from the workstation (azuki-sl) using RDP. 
--	Attacker Control: Fully compromised 
--	Status: CRITICALLY COMPROMISED
-  
-### Potentially Compromised Accounts
--	Any user account that logged into the file server (azuki-fileserver01) during the attack window should be considered compromised.
--	Service accounts usually have high privileges, so if they touched these infected machines, we have to assume the attackers have those keys now too.
-
-
-### File System Indicators
-- Renamed Credential Tool: [Flag 14 - FileName and SHA256]
-- Persistence Beacon: [Flag 19 - Registry Value Data path]
-- Compressed Archives: [Flag 13 - Identify .7z/.zip file names]
-- Staged Data Directory: [Flag 12 - robocopy destination path]
-
-### Registry Indicators
-- Persistence Key: HKCU/HKLM\Software\Microsoft\Windows\CurrentVersion\Run
-- Persistence Value Name: [Flag 18 result]
-
-### Process Execution
-- mstsc.exe with specific command line parameters
-- net.exe/net1.exe for share enumeration
-- whoami.exe for privilege checking
-- certutil.exe for file downloads
-- 7z.exe for data compression
-- curl.exe/powershell.exe for exfiltration
-- Renamed executables targeting LSASS
 
 
 
